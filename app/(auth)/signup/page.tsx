@@ -5,25 +5,42 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { CheckCircle2 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
+import { signUpUser } from "@/lib/actions/auth";
 
-export default function LoginPage() {
+export default function SignupPage() {
   const router = useRouter();
+  const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
+
+    if (password !== confirmPassword) {
+      setError("As senhas não coincidem.");
+      return;
+    }
+
     setLoading(true);
     setError(null);
 
-    const supabase = createClient();
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-
-    if (error) {
-      setError("E-mail ou senha inválidos.");
+    const result = await signUpUser({ fullName, email, password });
+    if (result.error) {
+      setError(result.error);
       setLoading(false);
+      return;
+    }
+
+    const supabase = createClient();
+    const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
+
+    if (signInError) {
+      setError("Conta criada. Faça login na tela de entrada.");
+      setLoading(false);
+      router.push("/login");
       return;
     }
 
@@ -38,9 +55,9 @@ export default function LoginPage() {
           <div className="flex size-11 items-center justify-center rounded-xl bg-[var(--color-accent)] text-[var(--color-accent-foreground)]">
             <CheckCircle2 size={22} />
           </div>
-          <h1 className="text-xl font-semibold text-[var(--color-text)]">Tarefas</h1>
+          <h1 className="text-xl font-semibold text-[var(--color-text)]">Criar conta</h1>
           <p className="text-sm text-[var(--color-text-muted)]">
-            Entre com sua conta para continuar
+            Limitado às 2 contas deste time
           </p>
         </div>
 
@@ -49,6 +66,22 @@ export default function LoginPage() {
           className="flex flex-col gap-4 rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-elevated)] p-6 shadow-sm"
         >
           <div className="flex flex-col gap-1.5">
+            <label htmlFor="fullName" className="text-sm font-medium text-[var(--color-text)]">
+              Nome completo
+            </label>
+            <input
+              id="fullName"
+              type="text"
+              required
+              autoFocus
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+              className="rounded-md border border-[var(--color-border)] bg-[var(--color-bg)] px-3 py-2 text-sm text-[var(--color-text)] outline-none focus:border-[var(--color-accent)] focus:ring-1 focus:ring-[var(--color-accent)]"
+              placeholder="Seu nome"
+            />
+          </div>
+
+          <div className="flex flex-col gap-1.5">
             <label htmlFor="email" className="text-sm font-medium text-[var(--color-text)]">
               E-mail
             </label>
@@ -56,7 +89,6 @@ export default function LoginPage() {
               id="email"
               type="email"
               required
-              autoFocus
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="rounded-md border border-[var(--color-border)] bg-[var(--color-bg)] px-3 py-2 text-sm text-[var(--color-text)] outline-none focus:border-[var(--color-accent)] focus:ring-1 focus:ring-[var(--color-accent)]"
@@ -72,8 +104,27 @@ export default function LoginPage() {
               id="password"
               type="password"
               required
+              minLength={6}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              className="rounded-md border border-[var(--color-border)] bg-[var(--color-bg)] px-3 py-2 text-sm text-[var(--color-text)] outline-none focus:border-[var(--color-accent)] focus:ring-1 focus:ring-[var(--color-accent)]"
+              placeholder="Pelo menos 6 caracteres"
+            />
+          </div>
+
+          <div className="flex flex-col gap-1.5">
+            <label
+              htmlFor="confirmPassword"
+              className="text-sm font-medium text-[var(--color-text)]"
+            >
+              Confirmar senha
+            </label>
+            <input
+              id="confirmPassword"
+              type="password"
+              required
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
               className="rounded-md border border-[var(--color-border)] bg-[var(--color-bg)] px-3 py-2 text-sm text-[var(--color-text)] outline-none focus:border-[var(--color-accent)] focus:ring-1 focus:ring-[var(--color-accent)]"
               placeholder="••••••••"
             />
@@ -90,14 +141,14 @@ export default function LoginPage() {
             disabled={loading}
             className="mt-1 rounded-md bg-[var(--color-accent)] px-3 py-2 text-sm font-medium text-[var(--color-accent-foreground)] transition-colors hover:bg-[var(--color-accent-hover)] disabled:opacity-60"
           >
-            {loading ? "Entrando..." : "Entrar"}
+            {loading ? "Criando conta..." : "Criar conta"}
           </button>
         </form>
 
         <p className="mt-6 text-center text-sm text-[var(--color-text-muted)]">
-          Ainda não tem conta?{" "}
-          <Link href="/signup" className="font-medium text-[var(--color-accent)] hover:underline">
-            Criar conta
+          Já tem conta?{" "}
+          <Link href="/login" className="font-medium text-[var(--color-accent)] hover:underline">
+            Entrar
           </Link>
         </p>
       </div>

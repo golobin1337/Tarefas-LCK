@@ -5,7 +5,7 @@ TypeScript + Tailwind CSS + Supabase (Postgres + Auth).
 
 ## Funcionalidades
 
-- Login com e-mail e senha (contas criadas manualmente no Supabase).
+- Login com e-mail e senha, com autocadastro limitado a 2 contas.
 - Adicionar tarefa rapidamente (botão flutuante ou atalho de teclado `N`).
 - **Hoje**: atrasadas + tarefas de hoje + o que já foi concluído hoje.
 - **Semana**: visão da semana atual agrupada em Atrasadas / Hoje / Amanhã / Resto da semana.
@@ -19,9 +19,10 @@ TypeScript + Tailwind CSS + Supabase (Postgres + Auth).
 ## 1. Criar o projeto no Supabase
 
 1. Acesse [supabase.com](https://supabase.com) e crie um novo projeto (ou use um existente).
-2. No painel do projeto, vá em **Project Settings > API** e copie:
+2. No painel do projeto, vá em **Project Settings > API Keys** e copie:
    - `Project URL`
-   - `anon public` key
+   - a chave **publishable** (pública, começa com `sb_publishable_...` ou é o `anon public` JWT em projetos mais antigos)
+   - a chave **secret** / **service_role** (privada — nunca vai para o navegador)
 
 ## 2. Configurar variáveis de ambiente
 
@@ -29,8 +30,14 @@ Copie os valores acima para o arquivo `.env.local` na raiz do projeto (já exist
 
 ```
 NEXT_PUBLIC_SUPABASE_URL=https://seu-projeto.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=sua-chave-anon
+NEXT_PUBLIC_SUPABASE_ANON_KEY=sua-chave-publishable
+SUPABASE_SERVICE_ROLE_KEY=sua-chave-service-role
 ```
+
+A `SUPABASE_SERVICE_ROLE_KEY` é usada apenas em server actions (nunca chega ao navegador) para
+permitir que a tela `/signup` crie as 2 contas do time sem precisar mexer no painel do Supabase.
+Ao publicar na Vercel, cadastre-a como variável do tipo **Secret** (não **Config**, que é para
+valores públicos).
 
 ## 3. Rodar as migrations
 
@@ -51,31 +58,21 @@ npx supabase link --project-ref SEU_PROJECT_REF
 npx supabase db push
 ```
 
-## 4. Criar os 2 usuários
-
-Como o app é só para 2 pessoas, os usuários são criados manualmente:
-
-1. No painel do Supabase, vá em **Authentication > Users > Add user**.
-2. Crie os dois usuários com e-mail e senha. Marque **Auto Confirm User** para não precisar de
-   confirmação por e-mail.
-3. O gatilho `on_auth_user_created` cria automaticamente uma linha em `profiles` para cada
-   usuário, usando o e-mail como nome inicial.
-4. (Opcional) Atualize o nome de exibição de cada um: no **SQL Editor**, rode:
-
-```sql
-update profiles set full_name = 'Seu Nome' where id = 'uuid-do-usuario';
-```
-
-Você encontra o `uuid` do usuário na tela de **Authentication > Users**.
-
-## 5. Instalar dependências e rodar localmente
+## 4. Instalar dependências e rodar localmente
 
 ```bash
 npm install
 npm run dev
 ```
 
-Acesse [http://localhost:3000](http://localhost:3000) e entre com um dos e-mails/senhas criados.
+## 5. Criar os 2 usuários
+
+Acesse [http://localhost:3000/signup](http://localhost:3000/signup) (ou `/signup` no domínio da
+Vercel, depois do deploy) e crie as duas contas por lá (nome, e-mail e senha). A conta já entra
+confirmada e ativa — não precisa mexer no painel do Supabase nem confirmar e-mail. Depois que a
+segunda conta for criada, a tela de cadastro se bloqueia automaticamente (limite de 2 contas),
+e novas contas só podem ser criadas apagando um usuário existente em **Authentication > Users**
+no painel do Supabase.
 
 ## Estrutura do projeto
 
@@ -102,10 +99,12 @@ lib/
 supabase/migrations/    SQL das tabelas, RLS e trigger de perfil
 ```
 
-## Deploy na Vercel (mais tarde)
+## Deploy na Vercel
 
 1. Suba o repositório para o GitHub.
 2. Importe o projeto na Vercel.
-3. Configure as mesmas variáveis de ambiente (`NEXT_PUBLIC_SUPABASE_URL` e
-   `NEXT_PUBLIC_SUPABASE_ANON_KEY`) nas configurações do projeto na Vercel.
-4. Deploy.
+3. Configure as mesmas variáveis de ambiente nas configurações do projeto na Vercel:
+   - `NEXT_PUBLIC_SUPABASE_URL` e `NEXT_PUBLIC_SUPABASE_ANON_KEY` como tipo **Config** (públicas).
+   - `SUPABASE_SERVICE_ROLE_KEY` como tipo **Secret** (privada).
+   - Marque Production, Preview e Development nas três.
+4. Deploy (ou Redeploy, se as variáveis foram adicionadas depois do primeiro deploy).
