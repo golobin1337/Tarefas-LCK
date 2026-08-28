@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { AlertTriangle, Trash2 } from "lucide-react";
 import { Modal } from "@/components/ui/modal";
 import { createTask, deleteTask, updateTask } from "@/lib/actions/tasks";
-import type { Profile, Project, TaskWithRelations } from "@/lib/types";
+import type { Profile, Project, TaskStatus, TaskWithRelations } from "@/lib/types";
 
 type TaskFormModalProps = {
   open: boolean;
@@ -14,6 +14,8 @@ type TaskFormModalProps = {
   profiles: Profile[];
   task?: TaskWithRelations | null;
   defaultDueDate?: string | null;
+  defaultProjectId?: string | null;
+  defaultStatus?: TaskStatus;
 };
 
 export function TaskFormModal({
@@ -23,6 +25,8 @@ export function TaskFormModal({
   profiles,
   task,
   defaultDueDate,
+  defaultProjectId,
+  defaultStatus,
 }: TaskFormModalProps) {
   return (
     <Modal open={open} onClose={onClose} title={task ? "Editar tarefa" : "Nova tarefa"}>
@@ -33,6 +37,8 @@ export function TaskFormModal({
           profiles={profiles}
           task={task}
           defaultDueDate={defaultDueDate}
+          defaultProjectId={defaultProjectId}
+          defaultStatus={defaultStatus}
         />
       )}
     </Modal>
@@ -45,6 +51,8 @@ type TaskFormFieldsProps = {
   profiles: Profile[];
   task?: TaskWithRelations | null;
   defaultDueDate?: string | null;
+  defaultProjectId?: string | null;
+  defaultStatus?: TaskStatus;
 };
 
 function TaskFormFields({
@@ -53,6 +61,8 @@ function TaskFormFields({
   profiles,
   task,
   defaultDueDate,
+  defaultProjectId,
+  defaultStatus,
 }: TaskFormFieldsProps) {
   const router = useRouter();
   const [form, setForm] = useState(() =>
@@ -69,7 +79,7 @@ function TaskFormFields({
           title: "",
           description: "",
           due_date: defaultDueDate ?? "",
-          project_id: "",
+          project_id: defaultProjectId ?? "",
           assigned_to: "",
           is_urgent: false,
         }
@@ -98,7 +108,7 @@ function TaskFormFields({
       if (task) {
         await updateTask(task.id, input);
       } else {
-        await createTask(input);
+        await createTask({ ...input, status: defaultStatus });
       }
       router.refresh();
       onClose();

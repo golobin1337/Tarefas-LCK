@@ -23,7 +23,7 @@ export function LembretesView({ tasks, projects, profiles, currentUserId }: Lemb
   const urgent = useMemo(() => tasks.filter((t) => t.is_urgent), [tasks]);
   const filtered = useMemo(() => applyTaskFilters(urgent, filters), [urgent, filters]);
 
-  const pending = filtered.filter((t) => t.status === "todo");
+  const pending = filtered.filter((t) => t.status !== "done");
   const resolved = filtered.filter((t) => t.status === "done");
 
   return (

@@ -7,6 +7,7 @@ import { ptBR } from "date-fns/locale";
 import { AlertTriangle } from "lucide-react";
 import { TaskFormModal } from "@/components/tasks/task-form-modal";
 import { setTaskStatus } from "@/lib/actions/tasks";
+import { initials } from "@/lib/format";
 import type { Profile, Project, TaskWithRelations } from "@/lib/types";
 
 type TaskRowProps = {
@@ -16,15 +17,6 @@ type TaskRowProps = {
   hideDate?: boolean;
   showCompletedDate?: boolean;
 };
-
-function initials(name: string) {
-  return name
-    .split(" ")
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((part) => part[0]?.toUpperCase())
-    .join("");
-}
 
 export function TaskRow({
   task,

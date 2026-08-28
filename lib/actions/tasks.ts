@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import type { TaskStatus } from "@/lib/types";
 
 export type TaskInput = {
   title: string;
@@ -10,6 +11,7 @@ export type TaskInput = {
   project_id?: string | null;
   assigned_to?: string | null;
   is_urgent?: boolean;
+  status?: TaskStatus;
 };
 
 async function requireUserId() {
@@ -27,6 +29,7 @@ function revalidateTaskViews() {
 
 export async function createTask(input: TaskInput) {
   const { supabase, userId } = await requireUserId();
+  const status = input.status ?? "todo";
 
   const { error } = await supabase.from("tasks").insert({
     title: input.title.trim(),
@@ -36,6 +39,8 @@ export async function createTask(input: TaskInput) {
     assigned_to: input.assigned_to || null,
     is_urgent: input.is_urgent ?? false,
     created_by: userId,
+    status,
+    completed_at: status === "done" ? new Date().toISOString() : null,
   });
 
   if (error) throw new Error(error.message);
@@ -61,7 +66,7 @@ export async function updateTask(id: string, input: TaskInput) {
   revalidateTaskViews();
 }
 
-export async function setTaskStatus(id: string, status: "todo" | "done") {
+export async function setTaskStatus(id: string, status: TaskStatus) {
   const { supabase } = await requireUserId();
 
   const { error } = await supabase

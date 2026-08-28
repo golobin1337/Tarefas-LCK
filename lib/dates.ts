@@ -1,12 +1,8 @@
-import { addDays, endOfWeek, format, parseISO, startOfWeek, subDays } from "date-fns";
+import { endOfWeek, format, parseISO, startOfWeek, subDays } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
 export function todayISO(): string {
   return format(new Date(), "yyyy-MM-dd");
-}
-
-export function tomorrowISO(): string {
-  return format(addDays(new Date(), 1), "yyyy-MM-dd");
 }
 
 export function yesterdayISO(): string {

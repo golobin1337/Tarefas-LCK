@@ -11,8 +11,8 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   ]);
 
   const todayStr = format(new Date(), "yyyy-MM-dd");
-  const urgentCount = tasks.filter((t) => t.is_urgent && t.status === "todo").length;
-  const todayCount = tasks.filter((t) => t.due_date === todayStr && t.status === "todo").length;
+  const urgentCount = tasks.filter((t) => t.is_urgent && t.status !== "done").length;
+  const todayCount = tasks.filter((t) => t.due_date === todayStr && t.status !== "done").length;
   const currentProfile = profiles.find((p) => p.id === user?.id) ?? null;
 
   return (

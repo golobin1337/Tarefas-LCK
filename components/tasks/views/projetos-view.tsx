@@ -32,7 +32,7 @@ export function ProjetosView({ projects, tasks }: ProjetosViewProps) {
       <div className="grid grid-cols-1 gap-3 px-4 pt-4 sm:grid-cols-2 sm:px-6 lg:grid-cols-3">
         {projects.map((project) => {
           const projectTasks = tasks.filter((t) => t.project_id === project.id);
-          const pendingCount = projectTasks.filter((t) => t.status === "todo").length;
+          const pendingCount = projectTasks.filter((t) => t.status !== "done").length;
           return (
             <ProjectCard
               key={project.id}
