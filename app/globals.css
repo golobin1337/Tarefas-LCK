@@ -1,0 +1,93 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --color-bg: #fafafa;
+  --color-bg-elevated: #ffffff;
+  --color-bg-hover: #f0f0f1;
+  --color-border: #e5e5e6;
+  --color-text: #202020;
+  --color-text-muted: #6b6b6f;
+  --color-text-faint: #a3a3a7;
+
+  --color-accent: #6366f1;
+  --color-accent-hover: #4f52d8;
+  --color-accent-foreground: #ffffff;
+  --color-accent-soft: #eeeefd;
+
+  --color-urgent: #e04b3f;
+  --color-urgent-hover: #c93e33;
+  --color-urgent-foreground: #ffffff;
+  --color-urgent-soft: #fdeceb;
+
+  --color-success: #2f9e6a;
+  --color-success-soft: #e9f7f0;
+}
+
+.dark {
+  --color-bg: #191919;
+  --color-bg-elevated: #212121;
+  --color-bg-hover: #2a2a2b;
+  --color-border: #323234;
+  --color-text: #ededed;
+  --color-text-muted: #a0a0a5;
+  --color-text-faint: #6b6b6f;
+
+  --color-accent: #818cf8;
+  --color-accent-hover: #a5abfb;
+  --color-accent-foreground: #191919;
+  --color-accent-soft: #2a2a45;
+
+  --color-urgent: #f0685c;
+  --color-urgent-hover: #f58a80;
+  --color-urgent-foreground: #191919;
+  --color-urgent-soft: #3a2320;
+
+  --color-success: #4cb884;
+  --color-success-soft: #1d3128;
+}
+
+@theme inline {
+  --color-bg: var(--color-bg);
+  --color-bg-elevated: var(--color-bg-elevated);
+  --color-bg-hover: var(--color-bg-hover);
+  --color-border: var(--color-border);
+  --color-text: var(--color-text);
+  --color-text-muted: var(--color-text-muted);
+  --color-text-faint: var(--color-text-faint);
+
+  --color-accent: var(--color-accent);
+  --color-accent-hover: var(--color-accent-hover);
+  --color-accent-foreground: var(--color-accent-foreground);
+  --color-accent-soft: var(--color-accent-soft);
+
+  --color-urgent: var(--color-urgent);
+  --color-urgent-hover: var(--color-urgent-hover);
+  --color-urgent-foreground: var(--color-urgent-foreground);
+  --color-urgent-soft: var(--color-urgent-soft);
+
+  --color-success: var(--color-success);
+  --color-success-soft: var(--color-success-soft);
+
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+* {
+  border-color: var(--color-border);
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+::selection {
+  background: var(--color-accent-soft);
+}
