@@ -27,25 +27,29 @@ export default function SignupPage() {
     setLoading(true);
     setError(null);
 
-    const result = await signUpUser({ fullName, email, password });
-    if (result.error) {
-      setError(result.error);
+    try {
+      const result = await signUpUser({ fullName, email, password });
+      if (result.error) {
+        setError(result.error);
+        return;
+      }
+
+      const supabase = createClient();
+      const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
+
+      if (signInError) {
+        setError("Conta criada. Faça login na tela de entrada.");
+        router.push("/login");
+        return;
+      }
+
+      router.push("/hoje");
+      router.refresh();
+    } catch {
+      setError("Não foi possível criar a conta. Tente novamente.");
+    } finally {
       setLoading(false);
-      return;
     }
-
-    const supabase = createClient();
-    const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
-
-    if (signInError) {
-      setError("Conta criada. Faça login na tela de entrada.");
-      setLoading(false);
-      router.push("/login");
-      return;
-    }
-
-    router.push("/hoje");
-    router.refresh();
   }
 
   return (
