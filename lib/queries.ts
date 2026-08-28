@@ -35,7 +35,7 @@ export async function getTasks(): Promise<TaskWithRelations[]> {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("tasks")
-    .select("*, project:projects(*), assignee:profiles(*)")
+    .select("*, project:projects(*), assignee:profiles!tasks_assigned_to_fkey(*)")
     .order("due_date", { ascending: true, nullsFirst: false })
     .order("created_at", { ascending: false });
 
