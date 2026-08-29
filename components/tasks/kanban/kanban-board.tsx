@@ -31,6 +31,7 @@ type KanbanBoardProps = {
   profiles: Profile[];
   defaultDueDate?: string | null;
   defaultProjectId?: string | null;
+  extraColumn?: React.ReactNode;
 };
 
 function groupByStatus(tasks: TaskWithRelations[]): Record<TaskStatus, string[]> {
@@ -56,6 +57,7 @@ export function KanbanBoard({
   profiles,
   defaultDueDate,
   defaultProjectId,
+  extraColumn,
 }: KanbanBoardProps) {
   const router = useRouter();
 
@@ -165,6 +167,7 @@ export function KanbanBoard({
               onAddClick={() => setCreateStatus(col.status)}
             />
           ))}
+          {extraColumn}
         </div>
 
         <DragOverlay>

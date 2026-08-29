@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
-import type { Profile, Project, TaskWithRelations } from "@/lib/types";
+import { todayISO } from "@/lib/dates";
+import type { DailyRoutineWithStatus, Profile, Project, TaskWithRelations } from "@/lib/types";
 
 export async function getCurrentUser() {
   const supabase = await createClient();
@@ -44,4 +45,28 @@ export async function getTasks(): Promise<TaskWithRelations[]> {
 
   if (error) throw new Error(error.message);
   return (data as unknown as TaskWithRelations[]) ?? [];
+}
+
+export async function getDailyRoutines(): Promise<DailyRoutineWithStatus[]> {
+  const supabase = await createClient();
+  const today = todayISO();
+
+  const [routinesRes, completionsRes] = await Promise.all([
+    supabase
+      .from("daily_routines")
+      .select("*, assignee:profiles(*)")
+      .eq("is_active", true)
+      .order("position", { ascending: true }),
+    supabase.from("daily_routine_completions").select("routine_id").eq("completion_date", today),
+  ]);
+
+  if (routinesRes.error) throw new Error(routinesRes.error.message);
+  if (completionsRes.error) throw new Error(completionsRes.error.message);
+
+  const completedIds = new Set((completionsRes.data ?? []).map((c) => c.routine_id));
+
+  return (routinesRes.data ?? []).map((routine) => ({
+    ...routine,
+    completedToday: completedIds.has(routine.id),
+  })) as unknown as DailyRoutineWithStatus[];
 }

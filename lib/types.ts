@@ -43,3 +43,17 @@ export type TaskWithRelations = Task & {
   assignee: Profile | null;
   checklist: ChecklistItem[];
 };
+
+export type DailyRoutine = {
+  id: string;
+  title: string;
+  assigned_to: string | null;
+  position: number;
+  is_active: boolean;
+  created_at: string;
+};
+
+export type DailyRoutineWithStatus = DailyRoutine & {
+  assignee: Profile | null;
+  completedToday: boolean;
+};

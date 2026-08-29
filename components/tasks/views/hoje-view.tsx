@@ -5,17 +5,19 @@ import { PageHeader } from "@/components/layout/page-header";
 import { TaskFilters, applyTaskFilters, type TaskFilterValues } from "@/components/tasks/task-filters";
 import { TaskSection } from "@/components/tasks/task-section";
 import { KanbanBoard } from "@/components/tasks/kanban/kanban-board";
+import { DailyRoutineColumn } from "@/components/tasks/kanban/daily-routine-column";
 import { todayISO } from "@/lib/dates";
-import type { Profile, Project, TaskWithRelations } from "@/lib/types";
+import type { DailyRoutineWithStatus, Profile, Project, TaskWithRelations } from "@/lib/types";
 
 type HojeViewProps = {
   tasks: TaskWithRelations[];
   projects: Project[];
   profiles: Profile[];
+  routines: DailyRoutineWithStatus[];
   currentUserId?: string;
 };
 
-export function HojeView({ tasks, projects, profiles, currentUserId }: HojeViewProps) {
+export function HojeView({ tasks, projects, profiles, routines, currentUserId }: HojeViewProps) {
   const [filters, setFilters] = useState<TaskFilterValues>({
     search: "",
     assignee: "",
@@ -53,6 +55,7 @@ export function HojeView({ tasks, projects, profiles, currentUserId }: HojeViewP
           projects={projects}
           profiles={profiles}
           defaultDueDate={today}
+          extraColumn={<DailyRoutineColumn routines={routines} profiles={profiles} />}
         />
       </div>
     </div>
