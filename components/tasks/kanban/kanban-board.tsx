@@ -15,6 +15,7 @@ import {
 import { KanbanColumn } from "@/components/tasks/kanban/kanban-column";
 import { KanbanCardContent } from "@/components/tasks/kanban/kanban-card";
 import { TaskFormModal } from "@/components/tasks/task-form-modal";
+import { TaskDetailModal } from "@/components/tasks/task-detail-modal";
 import { setTaskStatus } from "@/lib/actions/tasks";
 import type { Profile, Project, TaskStatus, TaskWithRelations } from "@/lib/types";
 
@@ -171,12 +172,12 @@ export function KanbanBoard({
         </DragOverlay>
       </DndContext>
 
-      <TaskFormModal
+      <TaskDetailModal
         open={editingTask !== null}
         onClose={() => setEditingTask(null)}
+        task={editingTask}
         projects={projects}
         profiles={profiles}
-        task={editingTask}
       />
 
       <TaskFormModal

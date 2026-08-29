@@ -1,4 +1,5 @@
 export type TaskStatus = "todo" | "doing" | "done";
+export type TaskPriority = "baixa" | "media" | "alta";
 
 export type Profile = {
   id: string;
@@ -13,11 +14,21 @@ export type Project = {
   created_at: string;
 };
 
+export type ChecklistItem = {
+  id: string;
+  task_id: string;
+  title: string;
+  is_done: boolean;
+  position: number;
+  created_at: string;
+};
+
 export type Task = {
   id: string;
   title: string;
   description: string | null;
   status: TaskStatus;
+  priority: TaskPriority;
   is_urgent: boolean;
   due_date: string | null;
   project_id: string | null;
@@ -30,4 +41,5 @@ export type Task = {
 export type TaskWithRelations = Task & {
   project: Project | null;
   assignee: Profile | null;
+  checklist: ChecklistItem[];
 };

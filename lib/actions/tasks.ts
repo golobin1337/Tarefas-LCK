@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
-import type { TaskStatus } from "@/lib/types";
+import type { TaskPriority, TaskStatus } from "@/lib/types";
 
 export type TaskInput = {
   title: string;
@@ -12,6 +12,7 @@ export type TaskInput = {
   assigned_to?: string | null;
   is_urgent?: boolean;
   status?: TaskStatus;
+  priority?: TaskPriority;
 };
 
 async function requireUserId() {
@@ -38,6 +39,7 @@ export async function createTask(input: TaskInput) {
     project_id: input.project_id || null,
     assigned_to: input.assigned_to || null,
     is_urgent: input.is_urgent ?? false,
+    priority: input.priority ?? "media",
     created_by: userId,
     status,
     completed_at: status === "done" ? new Date().toISOString() : null,
@@ -59,6 +61,7 @@ export async function updateTask(id: string, input: TaskInput) {
       project_id: input.project_id || null,
       assigned_to: input.assigned_to || null,
       is_urgent: input.is_urgent ?? false,
+      priority: input.priority ?? "media",
     })
     .eq("id", id);
 

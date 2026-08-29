@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { format, isPast, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { AlertTriangle } from "lucide-react";
-import { TaskFormModal } from "@/components/tasks/task-form-modal";
+import { TaskDetailModal } from "@/components/tasks/task-detail-modal";
 import { setTaskStatus } from "@/lib/actions/tasks";
 import { initials } from "@/lib/format";
 import type { Profile, Project, TaskWithRelations } from "@/lib/types";
@@ -169,12 +169,12 @@ export function TaskRow({
         )}
       </div>
 
-      <TaskFormModal
+      <TaskDetailModal
         open={editOpen}
         onClose={() => setEditOpen(false)}
+        task={task}
         projects={projects}
         profiles={profiles}
-        task={task}
       />
     </>
   );

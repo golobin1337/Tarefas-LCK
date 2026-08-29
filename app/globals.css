@@ -23,6 +23,9 @@
 
   --color-success: #2f9e6a;
   --color-success-soft: #e9f7f0;
+
+  --color-warning: #b8860b;
+  --color-warning-soft: #faf1de;
 }
 
 .dark {
@@ -46,6 +49,9 @@
 
   --color-success: #4cb884;
   --color-success-soft: #1d3128;
+
+  --color-warning: #e0b34f;
+  --color-warning-soft: #3a2e14;
 }
 
 @theme inline {
@@ -69,6 +75,9 @@
 
   --color-success: var(--color-success);
   --color-success-soft: var(--color-success-soft);
+
+  --color-warning: var(--color-warning);
+  --color-warning-soft: var(--color-warning-soft);
 
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);

@@ -35,9 +35,12 @@ export async function getTasks(): Promise<TaskWithRelations[]> {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("tasks")
-    .select("*, project:projects(*), assignee:profiles!tasks_assigned_to_fkey(*)")
+    .select(
+      "*, project:projects(*), assignee:profiles!tasks_assigned_to_fkey(*), checklist:task_checklist_items(*)"
+    )
     .order("due_date", { ascending: true, nullsFirst: false })
-    .order("created_at", { ascending: false });
+    .order("created_at", { ascending: false })
+    .order("position", { ascending: true, referencedTable: "task_checklist_items" });
 
   if (error) throw new Error(error.message);
   return (data as unknown as TaskWithRelations[]) ?? [];
