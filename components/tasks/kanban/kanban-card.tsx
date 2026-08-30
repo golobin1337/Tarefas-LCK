@@ -6,6 +6,7 @@ import { format, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { AlertTriangle, AlignLeft, ListChecks } from "lucide-react";
 import { initials } from "@/lib/format";
+import { todayISO } from "@/lib/dates";
 import { PRIORITY_COLOR_VAR } from "@/lib/priority";
 import type { TaskWithRelations } from "@/lib/types";
 
@@ -17,12 +18,13 @@ type KanbanCardContentProps = {
 export function KanbanCardContent({ task, dragging }: KanbanCardContentProps) {
   const checklistTotal = task.checklist?.length ?? 0;
   const checklistDone = task.checklist?.filter((i) => i.is_done).length ?? 0;
+  const isOverdue = task.status !== "done" && !!task.due_date && task.due_date < todayISO();
 
   return (
     <div
-      className={`relative flex flex-col gap-2 overflow-hidden rounded-lg border border-[var(--color-border)] bg-[var(--color-bg-elevated)] py-3 pl-4 pr-3 text-left shadow-sm transition-shadow ${
-        dragging ? "scale-105 shadow-md" : "hover:shadow-md"
-      }`}
+      className={`relative flex flex-col gap-2 overflow-hidden rounded-lg border bg-[var(--color-bg-elevated)] py-3 pl-4 pr-3 text-left shadow-sm transition-shadow ${
+        isOverdue ? "border-[var(--color-urgent)]" : "border-[var(--color-border)]"
+      } ${dragging ? "scale-105 shadow-md" : "hover:shadow-md"}`}
     >
       <span
         className="absolute inset-y-0 left-0 w-1"
@@ -55,7 +57,11 @@ export function KanbanCardContent({ task, dragging }: KanbanCardContentProps) {
             </span>
           )}
           {task.due_date && (
-            <span className="rounded-full bg-[var(--color-bg-hover)] px-1.5 py-0.5 text-[11px] text-[var(--color-text-muted)]">
+            <span
+              className={`rounded-full bg-[var(--color-bg-hover)] px-1.5 py-0.5 text-[11px] ${
+                isOverdue ? "font-medium text-[var(--color-urgent)]" : "text-[var(--color-text-muted)]"
+              }`}
+            >
               {format(parseISO(task.due_date), "d 'de' MMM", { locale: ptBR })}
             </span>
           )}

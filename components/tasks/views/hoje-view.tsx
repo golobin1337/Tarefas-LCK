@@ -30,7 +30,9 @@ export function HojeView({ tasks, projects, profiles, routines, currentUserId }:
   const overdue = filtered.filter(
     (t) => t.status !== "done" && t.due_date && t.due_date < today
   );
-  const dueToday = filtered.filter((t) => t.due_date === today);
+  const boardTasks = filtered.filter(
+    (t) => t.due_date === today || (t.status !== "done" && t.due_date && t.due_date < today)
+  );
 
   return (
     <div className="pb-10">
@@ -51,7 +53,7 @@ export function HojeView({ tasks, projects, profiles, routines, currentUserId }:
 
       <div className="mt-2">
         <KanbanBoard
-          tasks={dueToday}
+          tasks={boardTasks}
           projects={projects}
           profiles={profiles}
           defaultDueDate={today}
