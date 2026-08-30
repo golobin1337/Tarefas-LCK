@@ -3,7 +3,6 @@
 import { useMemo, useState } from "react";
 import { PageHeader } from "@/components/layout/page-header";
 import { TaskFilters, applyTaskFilters, type TaskFilterValues } from "@/components/tasks/task-filters";
-import { TaskSection } from "@/components/tasks/task-section";
 import { KanbanBoard } from "@/components/tasks/kanban/kanban-board";
 import { DailyRoutineColumn } from "@/components/tasks/kanban/daily-routine-column";
 import { todayISO } from "@/lib/dates";
@@ -27,9 +26,6 @@ export function HojeView({ tasks, projects, profiles, routines, currentUserId }:
   const today = todayISO();
   const filtered = useMemo(() => applyTaskFilters(tasks, filters), [tasks, filters]);
 
-  const overdue = filtered.filter(
-    (t) => t.status !== "done" && t.due_date && t.due_date < today
-  );
   const boardTasks = filtered.filter(
     (t) => t.due_date === today || (t.status !== "done" && t.due_date && t.due_date < today)
   );
@@ -45,10 +41,6 @@ export function HojeView({ tasks, projects, profiles, routines, currentUserId }:
           onChange={setFilters}
           currentUserId={currentUserId}
         />
-
-        <div className="px-2.5 sm:px-4">
-          <TaskSection title="Atrasadas" tasks={overdue} projects={projects} profiles={profiles} urgentTitle />
-        </div>
       </div>
 
       <div className="mt-2">
