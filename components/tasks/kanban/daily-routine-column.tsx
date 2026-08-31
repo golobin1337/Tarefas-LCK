@@ -2,7 +2,7 @@
 
 import { useRef, useState, type FormEvent, type KeyboardEvent } from "react";
 import { useRouter } from "next/navigation";
-import { Plus, X } from "lucide-react";
+import { Plus, Repeat, X } from "lucide-react";
 import {
   completeRoutineToday,
   createRoutine,
@@ -74,27 +74,45 @@ export function DailyRoutineColumn({ routines, profiles }: DailyRoutineColumnPro
     }
   }
 
+  const doneCount = routines.filter(isDone).length;
+  const progressPct = routines.length ? Math.round((doneCount / routines.length) * 100) : 0;
+
   return (
-    <div className="flex h-[70vh] w-72 shrink-0 flex-col rounded-lg border border-[var(--color-border)] bg-[var(--color-bg)] sm:w-80">
-      <div className="flex items-center justify-between gap-2 border-b border-[var(--color-border)] px-3 py-2.5">
-        <div className="flex items-center gap-2">
-          <span className="text-sm font-semibold text-[var(--color-text)]">Rotina Diária</span>
-          <span className="rounded-full bg-[var(--color-bg-hover)] px-1.5 py-0.5 text-[11px] font-medium text-[var(--color-text-muted)]">
-            {routines.length}
-          </span>
+    <div className="flex h-[70vh] w-72 shrink-0 flex-col rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] sm:w-80">
+      <div className="border-b border-[var(--color-border)] px-3.5 py-3">
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-semibold tracking-tight text-[var(--color-text)]">
+              Rotina Diária
+            </span>
+            {routines.length > 0 && (
+              <span className="rounded-full bg-[var(--color-bg-hover)] px-1.5 py-0.5 text-[11px] font-medium text-[var(--color-text-muted)]">
+                {doneCount}/{routines.length}
+              </span>
+            )}
+          </div>
+          <button
+            type="button"
+            onClick={() => {
+              setAdding(true);
+              requestAnimationFrame(() => titleInputRef.current?.focus());
+            }}
+            className="flex size-6 items-center justify-center rounded-md text-[var(--color-text-muted)] transition-colors hover:bg-[var(--color-bg-hover)] hover:text-[var(--color-text)]"
+            aria-label="Nova rotina"
+            title="Nova rotina"
+          >
+            <Plus size={15} />
+          </button>
         </div>
-        <button
-          type="button"
-          onClick={() => {
-            setAdding(true);
-            requestAnimationFrame(() => titleInputRef.current?.focus());
-          }}
-          className="flex size-6 items-center justify-center rounded-md text-[var(--color-text-muted)] hover:bg-[var(--color-bg-hover)] hover:text-[var(--color-text)]"
-          aria-label="Nova rotina"
-          title="Nova rotina"
-        >
-          <Plus size={15} />
-        </button>
+
+        {routines.length > 0 && (
+          <div className="mt-2 h-1 w-full overflow-hidden rounded-full bg-[var(--color-bg-hover)]">
+            <div
+              className="h-full rounded-full bg-[var(--color-success)] transition-all"
+              style={{ width: `${progressPct}%` }}
+            />
+          </div>
+        )}
       </div>
 
       <div className="flex flex-1 flex-col gap-1 overflow-y-auto p-2.5">
@@ -221,9 +239,12 @@ export function DailyRoutineColumn({ routines, profiles }: DailyRoutineColumnPro
         })}
 
         {routines.length === 0 && !adding && (
-          <p className="px-1 py-6 text-center text-xs text-[var(--color-text-faint)]">
-            Nenhuma rotina cadastrada.
-          </p>
+          <div className="flex flex-1 flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-[var(--color-border)] py-8 text-center">
+            <Repeat size={20} className="text-[var(--color-text-faint)]" />
+            <p className="px-4 text-xs text-[var(--color-text-faint)]">
+              Nenhuma rotina cadastrada
+            </p>
+          </div>
         )}
       </div>
     </div>

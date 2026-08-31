@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { ThemeToggle } from "@/components/layout/theme-toggle";
+import { initials } from "@/lib/format";
 import type { Profile, Project } from "@/lib/types";
 
 type SidebarProps = {
@@ -69,8 +70,13 @@ export function Sidebar({
         }`}
       >
         <div className="flex items-center justify-between px-4 py-4">
-          <span className="text-sm font-semibold tracking-tight text-[var(--color-text)]">
-            Tarefas
+          <span className="flex items-center gap-2">
+            <span className="flex size-6 items-center justify-center rounded-md bg-[var(--color-accent)] text-[var(--color-accent-foreground)]">
+              <CheckCircle2 size={14} />
+            </span>
+            <span className="text-sm font-semibold tracking-tight text-[var(--color-text)]">
+              Tarefas
+            </span>
           </span>
           <div className="flex items-center gap-1">
             <ThemeToggle />
@@ -94,7 +100,7 @@ export function Sidebar({
                 key={item.href}
                 href={item.href}
                 onClick={onCloseMobile}
-                className={`flex items-center justify-between rounded-md px-2.5 py-2 text-sm font-medium transition-colors ${
+                className={`flex items-center justify-between rounded-lg px-2.5 py-2 text-sm font-medium transition-colors ${
                   active
                     ? "bg-[var(--color-accent-soft)] text-[var(--color-accent)]"
                     : "text-[var(--color-text-muted)] hover:bg-[var(--color-bg-hover)] hover:text-[var(--color-text)]"
@@ -156,11 +162,16 @@ export function Sidebar({
         </div>
 
         <div className="flex items-center justify-between gap-2 border-t border-[var(--color-border)] px-4 py-3.5">
-          <div className="min-w-0">
-            <p className="truncate text-sm font-medium text-[var(--color-text)]">
-              {currentProfile?.full_name ?? currentEmail}
-            </p>
-            <p className="truncate text-xs text-[var(--color-text-faint)]">{currentEmail}</p>
+          <div className="flex min-w-0 items-center gap-2.5">
+            <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-[var(--color-accent-soft)] text-xs font-semibold text-[var(--color-accent)]">
+              {initials(currentProfile?.full_name ?? currentEmail)}
+            </span>
+            <div className="min-w-0">
+              <p className="truncate text-sm font-medium text-[var(--color-text)]">
+                {currentProfile?.full_name ?? currentEmail}
+              </p>
+              <p className="truncate text-xs text-[var(--color-text-faint)]">{currentEmail}</p>
+            </div>
           </div>
           <button
             type="button"

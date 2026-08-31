@@ -144,6 +144,27 @@ export function KanbanBoard({
     }
   }
 
+  function handleQuickMove(taskId: string, toStatus: TaskStatus) {
+    const fromStatus = findColumnOf(taskId);
+    if (!fromStatus || fromStatus === toStatus) return;
+
+    setColumns((prev) => ({
+      ...prev,
+      [fromStatus]: prev[fromStatus].filter((id) => id !== taskId),
+      [toStatus]: [...prev[toStatus], taskId],
+    }));
+
+    setTaskStatus(taskId, toStatus)
+      .then(() => router.refresh())
+      .catch(() => {
+        setColumns((prev) => ({
+          ...prev,
+          [toStatus]: prev[toStatus].filter((id) => id !== taskId),
+          [fromStatus]: [...prev[fromStatus], taskId],
+        }));
+      });
+  }
+
   const activeTask = activeId ? tasksById[activeId] : null;
 
   return (
@@ -165,6 +186,7 @@ export function KanbanBoard({
               tasksById={tasksById}
               onCardClick={(task) => setEditingTask(task)}
               onAddClick={() => setCreateStatus(col.status)}
+              onQuickMove={(taskId, toStatus) => handleQuickMove(taskId, toStatus)}
             />
           ))}
           {extraColumn}
