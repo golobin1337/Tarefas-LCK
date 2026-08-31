@@ -2,7 +2,7 @@
 
 import { useRef, useState, type FormEvent, type KeyboardEvent } from "react";
 import { useRouter } from "next/navigation";
-import { AlertTriangle, Plus, Trash2, X } from "lucide-react";
+import { AlertTriangle, CalendarOff, Plus, Trash2, X } from "lucide-react";
 import { Modal } from "@/components/ui/modal";
 import { deleteTask, updateTask } from "@/lib/actions/tasks";
 import { addChecklistItem, deleteChecklistItem, toggleChecklistItem } from "@/lib/actions/checklist";
@@ -214,7 +214,21 @@ function TaskDetailFields({ task, projects, profiles, onClose }: TaskDetailField
 
       <div className="grid grid-cols-2 gap-3">
         <div className="flex flex-col gap-1">
-          <label className="text-xs font-medium text-[var(--color-text-muted)]">Data</label>
+          <div className="flex items-center justify-between gap-2">
+            <label className="text-xs font-medium text-[var(--color-text-muted)]">Data</label>
+            <button
+              type="button"
+              onClick={() => handleDueDateChange("")}
+              className={`flex items-center gap-1 text-[11px] font-medium transition-colors ${
+                dueDate === ""
+                  ? "text-[var(--color-accent)]"
+                  : "text-[var(--color-text-faint)] hover:text-[var(--color-text-muted)]"
+              }`}
+            >
+              <CalendarOff size={11} />
+              Sem data definida
+            </button>
+          </div>
           <input
             type="date"
             value={dueDate}

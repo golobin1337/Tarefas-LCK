@@ -2,7 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
-import { AlertTriangle } from "lucide-react";
+import { AlertTriangle, CalendarOff } from "lucide-react";
 import { Modal } from "@/components/ui/modal";
 import { createTask } from "@/lib/actions/tasks";
 import type { Profile, Project, TaskStatus } from "@/lib/types";
@@ -123,7 +123,21 @@ function TaskFormFields({
 
       <div className="grid grid-cols-2 gap-3">
         <div className="flex flex-col gap-1">
-          <label className="text-xs font-medium text-[var(--color-text-muted)]">Data</label>
+          <div className="flex items-center justify-between gap-2">
+            <label className="text-xs font-medium text-[var(--color-text-muted)]">Data</label>
+            <button
+              type="button"
+              onClick={() => setForm((f) => ({ ...f, due_date: "" }))}
+              className={`flex items-center gap-1 text-[11px] font-medium transition-colors ${
+                form.due_date === ""
+                  ? "text-[var(--color-accent)]"
+                  : "text-[var(--color-text-faint)] hover:text-[var(--color-text-muted)]"
+              }`}
+            >
+              <CalendarOff size={11} />
+              Sem data definida
+            </button>
+          </div>
           <input
             type="date"
             value={form.due_date}

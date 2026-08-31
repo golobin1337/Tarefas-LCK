@@ -77,48 +77,50 @@ export function KanbanCardContent({
         )}
       </div>
 
-      {(task.is_urgent || task.project || task.due_date || checklistTotal > 0 || task.assignee) && (
-        <div className="flex flex-wrap items-center gap-1.5">
-          {task.is_urgent && (
-            <span className="flex items-center gap-1 rounded-full bg-[var(--color-urgent-soft)] px-1.5 py-0.5 text-[11px] font-medium text-[var(--color-urgent)]">
-              <AlertTriangle size={10} />
-              Urgente
-            </span>
-          )}
-          {task.project && (
-            <span className="flex items-center gap-1 rounded-full bg-[var(--color-bg-hover)] px-1.5 py-0.5 text-[11px] text-[var(--color-text-muted)]">
-              <span
-                className="size-1.5 rounded-full"
-                style={{ backgroundColor: task.project.color }}
-              />
-              {task.project.name}
-            </span>
-          )}
-          {checklistTotal > 0 && (
-            <span className="flex items-center gap-1 rounded-full bg-[var(--color-bg-hover)] px-1.5 py-0.5 text-[11px] text-[var(--color-text-muted)]">
-              <ListChecks size={10} />
-              {checklistDone}/{checklistTotal}
-            </span>
-          )}
-          {task.due_date && (
+      <div className="flex flex-wrap items-center gap-1.5">
+        {task.is_urgent && (
+          <span className="flex items-center gap-1 rounded-full bg-[var(--color-urgent-soft)] px-1.5 py-0.5 text-[11px] font-medium text-[var(--color-urgent)]">
+            <AlertTriangle size={10} />
+            Urgente
+          </span>
+        )}
+        {task.project && (
+          <span className="flex items-center gap-1 rounded-full bg-[var(--color-bg-hover)] px-1.5 py-0.5 text-[11px] text-[var(--color-text-muted)]">
             <span
-              className={`rounded-full bg-[var(--color-bg-hover)] px-1.5 py-0.5 text-[11px] ${
-                isOverdue ? "font-medium text-[var(--color-urgent)]" : "text-[var(--color-text-muted)]"
-              }`}
-            >
-              {format(parseISO(task.due_date), "d 'de' MMM", { locale: ptBR })}
-            </span>
-          )}
-          {task.assignee && (
-            <span
-              title={task.assignee.full_name}
-              className="ml-auto flex size-5 shrink-0 items-center justify-center rounded-full bg-[var(--color-accent-soft)] text-[10px] font-semibold text-[var(--color-accent)]"
-            >
-              {initials(task.assignee.full_name)}
-            </span>
-          )}
-        </div>
-      )}
+              className="size-1.5 rounded-full"
+              style={{ backgroundColor: task.project.color }}
+            />
+            {task.project.name}
+          </span>
+        )}
+        {checklistTotal > 0 && (
+          <span className="flex items-center gap-1 rounded-full bg-[var(--color-bg-hover)] px-1.5 py-0.5 text-[11px] text-[var(--color-text-muted)]">
+            <ListChecks size={10} />
+            {checklistDone}/{checklistTotal}
+          </span>
+        )}
+        {task.due_date ? (
+          <span
+            className={`rounded-full bg-[var(--color-bg-hover)] px-1.5 py-0.5 text-[11px] ${
+              isOverdue ? "font-medium text-[var(--color-urgent)]" : "text-[var(--color-text-muted)]"
+            }`}
+          >
+            {format(parseISO(task.due_date), "d 'de' MMM", { locale: ptBR })}
+          </span>
+        ) : (
+          <span className="rounded-full bg-[var(--color-bg-hover)] px-1.5 py-0.5 text-[11px] text-[var(--color-text-faint)]">
+            Sem data
+          </span>
+        )}
+        {task.assignee && (
+          <span
+            title={task.assignee.full_name}
+            className="ml-auto flex size-5 shrink-0 items-center justify-center rounded-full bg-[var(--color-accent-soft)] text-[10px] font-semibold text-[var(--color-accent)]"
+          >
+            {initials(task.assignee.full_name)}
+          </span>
+        )}
+      </div>
 
       {task.description && (
         <div className="flex items-center text-[var(--color-text-faint)]">
