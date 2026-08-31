@@ -8,7 +8,6 @@ import {
   CheckCircle2,
   Folder,
   LogOut,
-  Sun,
   X,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
@@ -21,7 +20,6 @@ type SidebarProps = {
   currentProfile: Profile | null;
   currentEmail: string;
   urgentCount: number;
-  todayCount: number;
   mobileOpen: boolean;
   onCloseMobile: () => void;
 };
@@ -31,7 +29,6 @@ export function Sidebar({
   currentProfile,
   currentEmail,
   urgentCount,
-  todayCount,
   mobileOpen,
   onCloseMobile,
 }: SidebarProps) {
@@ -39,7 +36,6 @@ export function Sidebar({
   const router = useRouter();
 
   const navItems = [
-    { href: "/hoje", label: "Hoje", icon: Sun, badge: todayCount },
     { href: "/semana", label: "Semana", icon: CalendarDays, badge: 0 },
     { href: "/lembretes", label: "Lembretes", icon: AlertTriangle, badge: urgentCount, urgent: true },
     { href: "/concluidas", label: "Concluídas", icon: CheckCircle2, badge: 0 },

@@ -13,7 +13,7 @@ const NEXT_STATUS: Partial<Record<TaskStatus, TaskStatus>> = {
 const EMPTY_STATE: Record<TaskStatus, { icon: typeof Inbox; message: string }> = {
   todo: { icon: Inbox, message: "Nada por aqui ainda" },
   doing: { icon: Timer, message: "Nenhuma tarefa em andamento" },
-  done: { icon: PartyPopper, message: "Ainda nada concluído hoje" },
+  done: { icon: PartyPopper, message: "Ainda nada concluído" },
 };
 
 type KanbanColumnProps = {

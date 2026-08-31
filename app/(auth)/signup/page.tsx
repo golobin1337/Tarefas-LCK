@@ -43,7 +43,7 @@ export default function SignupPage() {
         return;
       }
 
-      router.push("/hoje");
+      router.push("/semana");
       router.refresh();
     } catch {
       setError("Não foi possível criar a conta. Tente novamente.");

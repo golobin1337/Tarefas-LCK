@@ -27,7 +27,7 @@ export default function LoginPage() {
       return;
     }
 
-    router.push("/hoje");
+    router.push("/semana");
     router.refresh();
   }
 

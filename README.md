@@ -7,11 +7,18 @@ TypeScript + Tailwind CSS + Supabase (Postgres + Auth).
 
 - Login com e-mail e senha, com autocadastro limitado a 2 contas.
 - Adicionar tarefa rapidamente (botão flutuante ou atalho de teclado `N`).
-- **Hoje**: atrasadas + tarefas de hoje + o que já foi concluído hoje.
-- **Semana**: visão da semana atual agrupada em Atrasadas / Hoje / Amanhã / Resto da semana.
+- **Semana**: quadro Kanban (A Fazer / Fazendo / Concluído) com drag and drop, escopado para a
+  semana atual — Concluído mostra tudo que foi concluído desde a segunda-feira, sem sumir de um
+  dia para o outro. Cabeçalho com progresso da semana. Tarefas sem data ou atrasadas continuam
+  sempre visíveis, para nunca ficarem esquecidas.
+- **Rotina Diária**: 4ª coluna do quadro, uma checklist de tarefas recorrentes (ex: responder
+  WhatsApp, checar métricas) que reseta sozinha todo dia — sem afetar o histórico do Kanban.
+- Cada tarefa tem descrição, checklist de subtarefas, prioridade (baixa/média/alta) e urgência,
+  editáveis num painel de detalhe que abre ao clicar no card.
 - **Lembretes**: tarefas marcadas como urgentes, destacadas visualmente.
 - **Concluídas**: revisão do que foi feito na semana, agrupado por dia.
-- **Projetos**: categorias coloridas para organizar as tarefas por área do negócio.
+- **Projetos**: categorias coloridas para organizar as tarefas por área do negócio, cada uma com
+  seu próprio quadro Kanban.
 - Atribuição de tarefas a um dos dois usuários (ou sem responsável).
 - Busca e filtros por responsável e projeto.
 - Tema claro/escuro.
@@ -78,25 +85,29 @@ no painel do Supabase.
 
 ```
 app/
-  (auth)/login/        tela de login
-  (app)/                rotas protegidas (sidebar + tema)
-    hoje/
-    semana/
+  (auth)/login/, signup/   telas de autenticação
+  (app)/                    rotas protegidas (sidebar + tema)
+    hoje/                   redireciona para /semana (rota antiga)
+    semana/                 tela principal (quadro Kanban da semana)
     lembretes/
     concluidas/
     projetos/
       [id]/
 components/
   ui/                   componentes genéricos (modal)
-  tasks/                lista, formulário, filtros e views de tarefas
+  tasks/
+    kanban/             quadro (board, coluna, card, rotina diária)
+    views/              cada tela (semana, lembretes, concluídas, projetos)
+    task-detail-modal.tsx  painel de detalhe (descrição, checklist, prioridade)
+    task-form-modal.tsx    formulário de criação rápida
   projects/             cartão e formulário de projeto
   layout/               sidebar, topo mobile, toggle de tema
 lib/
   supabase/             clientes Supabase (browser, server, middleware)
-  actions/              server actions de tarefas e projetos
+  actions/              server actions (tarefas, checklist, projetos, rotinas, auth)
   queries.ts            leitura de dados (server)
   types.ts              tipos compartilhados
-supabase/migrations/    SQL das tabelas, RLS e trigger de perfil
+supabase/migrations/    SQL das tabelas, RLS, triggers e constraints
 ```
 
 ## Deploy na Vercel

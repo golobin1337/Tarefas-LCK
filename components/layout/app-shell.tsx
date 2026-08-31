@@ -13,7 +13,6 @@ type AppShellProps = {
   currentProfile: Profile | null;
   currentEmail: string;
   urgentCount: number;
-  todayCount: number;
   children: React.ReactNode;
 };
 
@@ -23,7 +22,6 @@ export function AppShell({
   currentProfile,
   currentEmail,
   urgentCount,
-  todayCount,
   children,
 }: AppShellProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -35,7 +33,6 @@ export function AppShell({
         currentProfile={currentProfile}
         currentEmail={currentEmail}
         urgentCount={urgentCount}
-        todayCount={todayCount}
         mobileOpen={mobileOpen}
         onCloseMobile={() => setMobileOpen(false)}
       />

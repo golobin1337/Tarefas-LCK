@@ -1,12 +1,13 @@
 import { SemanaView } from "@/components/tasks/views/semana-view";
-import { getCurrentUser, getProfiles, getProjects, getTasks } from "@/lib/queries";
+import { getCurrentUser, getDailyRoutines, getProfiles, getProjects, getTasks } from "@/lib/queries";
 
 export default async function SemanaPage() {
-  const [user, tasks, projects, profiles] = await Promise.all([
+  const [user, tasks, projects, profiles, routines] = await Promise.all([
     getCurrentUser(),
     getTasks(),
     getProjects(),
     getProfiles(),
+    getDailyRoutines(),
   ]);
 
   return (
@@ -14,6 +15,7 @@ export default async function SemanaPage() {
       tasks={tasks}
       projects={projects}
       profiles={profiles}
+      routines={routines}
       currentUserId={user?.id}
     />
   );
