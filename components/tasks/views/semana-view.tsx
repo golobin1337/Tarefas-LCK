@@ -24,9 +24,10 @@ export function SemanaView({ tasks, projects, profiles, currentUserId }: SemanaV
   const { start: weekStart, end: weekEnd } = currentWeekBoundsISO();
 
   const filtered = useMemo(() => applyTaskFilters(tasks, filters), [tasks, filters]);
-  const thisWeek = filtered.filter(
-    (t) => t.due_date && t.due_date >= weekStart && t.due_date <= weekEnd
-  );
+  const thisWeek = filtered.filter((t) => {
+    if (!t.due_date) return t.status !== "done";
+    return t.due_date >= weekStart && t.due_date <= weekEnd;
+  });
 
   return (
     <div className="pb-10">

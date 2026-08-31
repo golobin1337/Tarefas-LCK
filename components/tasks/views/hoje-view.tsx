@@ -27,9 +27,13 @@ export function HojeView({ tasks, projects, profiles, routines, currentUserId }:
   const today = todayISO();
   const filtered = useMemo(() => applyTaskFilters(tasks, filters), [tasks, filters]);
 
-  const boardTasks = filtered.filter(
-    (t) => t.due_date === today || (t.status !== "done" && t.due_date && t.due_date < today)
-  );
+  const boardTasks = filtered.filter((t) => {
+    if (!t.due_date) {
+      if (t.status !== "done") return true;
+      return !!t.completed_at && t.completed_at.slice(0, 10) === today;
+    }
+    return t.due_date === today || (t.status !== "done" && t.due_date < today);
+  });
 
   const doneCount = boardTasks.filter((t) => t.status === "done").length;
   const totalCount = boardTasks.length;
