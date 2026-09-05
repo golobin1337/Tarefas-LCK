@@ -37,22 +37,30 @@ export function SemanaView({
 
   // A Fazer/Fazendo: qualquer tarefa pendente relevante agora — sem data,
   // atrasada (de qualquer época, pra nunca sumir do quadro) ou com
-  // vencimento até o fim desta semana. Concluído: tudo que foi concluído
-  // desde a segunda-feira desta semana, independente de quando venceu —
-  // assim o quadro reflete o trabalho da semana inteira, não só do dia.
-  const boardTasks = filtered.filter((t) => {
-    if (t.status === "done") {
-      if (!t.completed_at) return false;
-      const completedDate = t.completed_at.slice(0, 10);
-      return completedDate >= weekStart && completedDate <= weekEnd;
-    }
+  // vencimento até o fim desta semana.
+  const pendingTasks = filtered.filter((t) => {
+    if (t.status === "done") return false;
     if (!t.due_date) return true;
     if (t.due_date < today) return true;
     return t.due_date <= weekEnd;
   });
 
-  const doneCount = boardTasks.filter((t) => t.status === "done").length;
-  const totalCount = boardTasks.length;
+  // Concluído: por enquanto sem reset semanal — mostra tudo que já foi
+  // concluído, pra nada sumir do quadro. O histórico completo também
+  // sempre disponível em Concluídas.
+  const completedTasks = filtered.filter((t) => t.status === "done");
+
+  const boardTasks = [...pendingTasks, ...completedTasks];
+
+  // O indicador de progresso continua só da semana atual (desde segunda),
+  // mesmo com a coluna Concluído agora mostrando tudo.
+  const completedThisWeek = completedTasks.filter((t) => {
+    if (!t.completed_at) return false;
+    const completedDate = t.completed_at.slice(0, 10);
+    return completedDate >= weekStart && completedDate <= weekEnd;
+  });
+  const doneCount = completedThisWeek.length;
+  const totalCount = pendingTasks.length + doneCount;
   const progressPct = totalCount ? Math.round((doneCount / totalCount) * 100) : 0;
 
   const fullDate = format(new Date(), "EEEE, d 'de' MMMM", { locale: ptBR });
